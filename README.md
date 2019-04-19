@@ -42,6 +42,8 @@
 
 |- classifier.pkl  # saved model 
 
+- ML Pipeline Preparation.ipynb
+
 - README.md
 
 ### Instructions:
