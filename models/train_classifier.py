@@ -24,6 +24,14 @@ nltk.download('punkt')
 nltk.download('wordnet')
 
 def load_data(database_filepath):
+    '''
+    INPUT:
+    database_filepath - sqllite database after etl process
+    OUTPUT:
+    X - the features for training
+    Y - the labels for training
+    targets - the labels' name of Y
+    '''
     # load data from database
     engine = create_engine('sqlite:///' + database_filepath)
     df = pd.read_sql_query("SELECT * FROM InsertTableName", engine)
@@ -34,6 +42,12 @@ def load_data(database_filepath):
 
 
 def tokenize(text):
+    '''
+    INPUT:
+    text - the text string need to tokenzie
+    OUTPUT:
+    clean - the cleaned tokens of the tokenize text
+    '''
     tokens = word_tokenize(text)
     lemmatizer = WordNetLemmatizer()
     clean_tokens = []
@@ -44,6 +58,11 @@ def tokenize(text):
 
 
 def build_model():
+    '''
+    build a pipline to make a machine learning model
+    OUTPUT:
+    cv - the built model include pipline and gridsearchCV
+    '''
     pipeline = Pipeline([
         ('features', FeatureUnion([
 
@@ -74,6 +93,13 @@ def build_model():
     return cv
 
 def display_results(cv, y_test, y_pred):
+    '''
+    INPUT:
+    cv - the built model for training and testing
+    y_test - the labels for testing
+    y_pred - the labels that predicted by the cv model
+    just display the result of this model, check if it's good enough
+    '''
     labels = np.unique(y_pred)
     print(labels)
     confusion_mat = confusion_matrix(y_test, y_pred, labels=labels)
@@ -85,15 +111,34 @@ def display_results(cv, y_test, y_pred):
     print("\nBest Parameters:", cv.best_params_)
     
 def evaluate_model(model, X_test, Y_test, category_names):
+    '''
+    INPUT:
+    model - the ML model prepared for evaluated
+    X_test - the features prepared to test this model
+    Y_test - the labels of testing data to evaluate this model
+    category_names - the labels' name of the labels
+    OUTPUT:
+    no output , just print the evaluate result
+    '''
     Y_pred = model.predict(X_test)
     display_results(model, Y_test[:, 0], Y_pred[:, 0])
 
 def save_model(model, model_filepath):
+    '''
+    INPUT:
+    model - the model needed to saved
+    model_filepath - the filepath to save the model
+    OUTPUT:
+    no output, just save the model to local file system
+    '''
     with open(model_filepath, 'wb') as f:
         pickle.dump(model, f)
 
 
 def main():
+    '''
+    The main function.
+    '''
     if len(sys.argv) == 3:
         database_filepath, model_filepath = sys.argv[1:]
         print('Loading data...\n    DATABASE: {}'.format(database_filepath))

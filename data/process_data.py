@@ -4,6 +4,15 @@ import numpy as np
 from sqlalchemy import create_engine
 
 def load_data(messages_filepath, categories_filepath):
+    '''
+    INPUT:
+    messages_filepath - the file path of message dataset (I this you know that by the name)
+    categories_filepath - fiel path of categories dataset (see above)
+    
+    OUTPUT:
+    df - dataframe merged from message and categories dataset
+    
+    '''
     # load messages dataset
     messages = pd.read_csv(messages_filepath)
     print(messages.shape)
@@ -51,6 +60,14 @@ def load_data(messages_filepath, categories_filepath):
     return df
 
 def clean_data(df):
+    '''
+    INPUT:
+    df - dataframe that merged from message categories
+    
+    OUTPUT:
+    df - dataframe after data clean
+    
+    '''
     # check number of duplicates
     unique_indices = np.array(np.nonzero(np.unique(df['id']))).ravel()
     df.shape[0] - len(unique_indices)
@@ -61,11 +78,20 @@ def clean_data(df):
     return df
 
 def save_data(df, database_filename):
+    '''
+    INPUT:
+    df - cleaned dataframe that merged from message and categories
+    OUTPUT:
+    no output
+    '''
     engine = create_engine('sqlite:///' + database_filename)
     df.to_sql('InsertTableName', engine, index=False)
 
 
 def main():
+    '''
+    the main function
+    '''
     if len(sys.argv) == 4:
 
         messages_filepath, categories_filepath, database_filepath = sys.argv[1:]
