@@ -13,5 +13,3 @@
 - models
 |- train_classifier.py
 |- classifier.pkl  # saved model 
-
-- README.md
